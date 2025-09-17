@@ -1,0 +1,89 @@
+Create a production-ready ATAN (Adaptive Task Automation Network) marketplace - a platform where businesses rent AI agents for micro-tasks with PAY-AS-YOU-GO pricing model.
+
+Tech stack: Node.js + Express backend, React + Tailwind frontend, PostgreSQL database, WebSocket for real-time updates.
+
+Create this exact structure:
+
+Backend:
+- /server/app.js with Express server, CORS, error handling
+- /server/routes/ with userRoutes.js, agentRoutes.js, taskRoutes.js, paymentRoutes.js, analyticsRoutes.js
+- /server/controllers/ with corresponding controllers including analyticsController.js
+- /server/models/ with User.js, Agent.js, Task.js, Transaction.js, Usage.js models
+- /server/services/ with aiService.js, blockchainService.js, mcpService.js, pricingService.js, analyticsService.js
+- /server/middleware/ with auth.js using JWT, usageTracker.js
+
+Frontend:
+- /client/src/App.jsx with React Router
+- /client/src/pages/ with Home.jsx, Dashboard.jsx, Marketplace.jsx, Analytics.jsx, Billing.jsx
+- /client/src/components/ with AgentCard.jsx, TaskQueue.jsx, UsageBreakdown.jsx, CostPredictor.jsx, PricingCalculator.jsx
+- /client/src/services/ with api.js for backend calls
+
+Database:
+- /database/schema.sql with tables:
+  - users (id, email, company_name, wallet_address, credits_balance)
+  - agents (id, name, type, price_per_task, price_per_token, total_tasks_completed)
+  - tasks (id, user_id, agent_id, input_tokens, output_tokens, task_cost, status, created_at)
+  - transactions (id, user_id, amount, type, description, timestamp)
+  - usage_metrics (id, user_id, task_count, agent_usage, token_count, total_cost, date)
+  - pricing_tiers (id, agent_type, base_price, token_price, bulk_discount)
+
+MCP Agents with usage tracking:
+- /agents/invoice-processor/ with agent.js, schema.json, pricing.json
+- /agents/email-sorter/ with agent.js, schema.json, pricing.json
+- /agents/data-entry/ with agent.js, schema.json, pricing.json
+
+Pricing Service (/server/services/pricingService.js):
+- Track per-task cost (base price per agent type)
+- Track per-token cost (input + output tokens)
+- Track per-agent usage
+- Calculate bulk discounts for high volume
+- Real-time cost accumulation
+
+Analytics Dashboard components:
+- Usage breakdown chart (tasks, agents, tokens)
+- Cost breakdown (per task, per agent, per token)
+- Predictive cost calculator:
+  - Based on current usage rate
+  - Daily projection
+  - Monthly projection (with 10% volume discount)
+  - Yearly projection (with 20% volume discount)
+- Usage trends graph
+- Top agents by usage
+- Cost optimization suggestions
+
+Pricing Model:
+1. Base pricing:
+   - Invoice Processor: $0.05 per task + $0.001 per 1K tokens
+   - Email Sorter: $0.03 per task + $0.0008 per 1K tokens
+   - Data Entry: $0.02 per task + $0.0005 per 1K tokens
+
+2. Volume discounts:
+   - 100+ tasks/day: 5% discount
+   - 1000+ tasks/day: 10% discount
+   - 10000+ tasks/day: 20% discount
+
+3. Billing features:
+   - Real-time usage tracking
+   - Prepaid credits system
+   - Auto-top-up option
+   - Usage alerts at 50%, 80%, 100% of budget
+   - Detailed invoices with breakdown
+   - API usage tracking
+   - Cost per department/project tracking
+
+Root files:
+- package.json with dependencies including recharts for analytics
+- .env.example with placeholder keys
+- README.md with pricing model documentation
+
+The marketplace should have:
+1. Three AI agents with transparent per-use pricing
+2. Real-time usage dashboard with cost tracking
+3. Predictive cost analysis based on current usage patterns
+4. Detailed billing breakdown (task, agent, token level)
+5. Usage analytics with daily/monthly/yearly projections
+6. Budget alerts and spending limits
+7. Department/project-wise cost allocation
+8. Export usage reports as CSV/PDF
+
+Make it production-ready with proper cost tracking, usage monitoring, and detailed analytics.

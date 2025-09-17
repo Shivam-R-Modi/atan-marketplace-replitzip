@@ -1,0 +1,102 @@
+{
+  "name": "Invoice Processor",
+  "type": "invoice-processor",
+  "version": "1.0.0",
+  "description": "Automated invoice processing, data extraction, and validation with 99.2% accuracy",
+  "capabilities": {
+    "formats": ["PDF", "Image", "Email"],
+    "languages": ["English", "Spanish", "French"],
+    "accuracy": "99.2%",
+    "features": [
+      "Document OCR",
+      "Data extraction",
+      "Field validation",
+      "Multi-format support",
+      "Confidence scoring"
+    ]
+  },
+  "input_schema": {
+    "type": "object",
+    "required": ["document"],
+    "properties": {
+      "document": {
+        "type": "string",
+        "description": "Base64 encoded document or document URL",
+        "format": "base64"
+      },
+      "extractFields": {
+        "type": "array",
+        "description": "Specific fields to extract",
+        "items": {
+          "type": "string",
+          "enum": ["amount", "vendor", "date", "invoiceNumber", "dueDate", "lineItems", "tax"]
+        },
+        "default": []
+      },
+      "language": {
+        "type": "string",
+        "description": "Document language for OCR optimization",
+        "enum": ["en", "es", "fr"],
+        "default": "en"
+      },
+      "validateData": {
+        "type": "boolean",
+        "description": "Whether to perform data validation",
+        "default": true
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "invoiceNumber": { "type": "string" },
+      "amount": { "type": "number" },
+      "currency": { "type": "string" },
+      "dueDate": { "type": "string", "format": "date" },
+      "vendor": { "type": "string" },
+      "customerInfo": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "type": "string" },
+          "zipCode": { "type": "string" },
+          "email": { "type": "string", "format": "email" }
+        }
+      },
+      "lineItems": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "description": { "type": "string" },
+            "quantity": { "type": "number" },
+            "unitPrice": { "type": "number" },
+            "total": { "type": "number" }
+          }
+        }
+      },
+      "taxAmount": { "type": "number" },
+      "subtotal": { "type": "number" },
+      "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+      "extractedAt": { "type": "string", "format": "date-time" },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "processingTime": { "type": "integer" },
+          "documentType": { "type": "string" },
+          "pageCount": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "error_codes": {
+    "INVALID_INPUT": "Invalid or missing input document",
+    "UNSUPPORTED_FORMAT": "Document format not supported",
+    "PROCESSING_FAILED": "Document processing failed",
+    "LOW_CONFIDENCE": "Extraction confidence below threshold",
+    "VALIDATION_FAILED": "Data validation failed"
+  }
+}

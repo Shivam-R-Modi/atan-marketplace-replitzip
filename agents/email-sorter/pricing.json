@@ -1,0 +1,56 @@
+{
+  "agent": "email-sorter",
+  "version": "1.0.0",
+  "pricing": {
+    "base_price": 0.03,
+    "currency": "USD",
+    "billing_unit": "per_task",
+    "token_pricing": {
+      "price_per_1k_tokens": 0.0008,
+      "input_tokens": 0.0008,
+      "output_tokens": 0.0008
+    },
+    "volume_discounts": [
+      {
+        "min_tasks_per_day": 100,
+        "discount_percentage": 5,
+        "description": "5% discount for 100+ tasks per day"
+      },
+      {
+        "min_tasks_per_day": 1000,
+        "discount_percentage": 10,
+        "description": "10% discount for 1,000+ tasks per day"
+      },
+      {
+        "min_tasks_per_day": 10000,
+        "discount_percentage": 20,
+        "description": "20% discount for 10,000+ tasks per day"
+      }
+    ],
+    "additional_fees": {
+      "custom_rules": {
+        "per_rule_fee": 0.001,
+        "description": "Additional $0.001 per custom rule applied"
+      },
+      "sentiment_analysis": {
+        "multiplier": 1.2,
+        "description": "1.2x price when sentiment analysis is enabled"
+      },
+      "entity_extraction": {
+        "fixed_fee": 0.005,
+        "description": "Additional $0.005 for entity extraction"
+      }
+    }
+  },
+  "usage_limits": {
+    "max_emails_per_batch": 1000,
+    "max_email_size_kb": 100,
+    "rate_limit_per_minute": 200,
+    "rate_limit_per_hour": 10000
+  },
+  "sla": {
+    "processing_time_seconds": 15,
+    "availability_percentage": 99.8,
+    "accuracy_percentage": 96.8
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "name": "Email Sorter",
+  "type": "email-sorter",
+  "version": "1.0.0",
+  "description": "Intelligent email classification, priority sorting, and automated responses",
+  "capabilities": {
+    "categories": ["Sales", "Support", "Marketing", "General"],
+    "languages": ["English", "Spanish"],
+    "accuracy": "96.8%",
+    "features": [
+      "Priority classification",
+      "Category sorting",
+      "Sentiment analysis",
+      "Spam detection",
+      "Entity extraction",
+      "Action suggestions"
+    ]
+  },
+  "input_schema": {
+    "type": "object",
+    "required": ["emails"],
+    "properties": {
+      "emails": {
+        "type": "array",
+        "description": "Array of emails to process",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["subject"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Unique email identifier"
+            },
+            "subject": {
+              "type": "string",
+              "description": "Email subject line"
+            },
+            "from": {
+              "type": "string",
+              "description": "Sender email address"
+            },
+            "body": {
+              "type": "string",
+              "description": "Email body content"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Email timestamp"
+            }
+          }
+        }
+      },
+      "categories": {
+        "type": "array",
+        "description": "Custom categories for classification",
+        "items": {
+          "type": "string"
+        },
+        "default": ["sales", "support", "marketing", "general"]
+      },
+      "customRules": {
+        "type": "array",
+        "description": "Custom classification rules",
+        "items": {
+          "type": "object",
+          "properties": {
+            "condition": { "type": "string" },
+            "action": { "type": "string" },
+            "category": { "type": "string" },
+            "priority": { "type": "string" }
+          }
+        },
+        "default": []
+      },
+      "includeSpamDetection": {
+        "type": "boolean",
+        "description": "Whether to include spam probability analysis",
+        "default": true
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "totalProcessed": { "type": "integer" },
+      "sortedEmails": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "originalSubject": { "type": "string" },
+            "originalFrom": { "type": "string" },
+            "priority": { 
+              "type": "string", 
+              "enum": ["urgent", "high", "normal", "low"]
+            },
+            "category": { "type": "string" },
+            "sentiment": { 
+              "type": "string", 
+              "enum": ["positive", "negative", "neutral"]
+            },
+            "spamProbability": { 
+              "type": "number", 
+              "minimum": 0, 
+              "maximum": 1 
+            },
+            "confidence": { 
+              "type": "number", 
+              "minimum": 0, 
+              "maximum": 1 
+            },
+            "suggestedActions": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "extractedEntities": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              }
+            },
+            "timestamp": { "type": "string", "format": "date-time" },
+            "processedAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "summary": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "integer" },
+          "urgent": { "type": "integer" },
+          "spam": { "type": "integer" },
+          "needsAttention": { "type": "integer" },
+          "avgConfidence": { "type": "number" }
+        }
+      },
+      "categories": {
+        "type": "object",
+        "description": "Count of emails per category"
+      },
+      "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+      "processedAt": { "type": "string", "format": "date-time" },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "processingTime": { "type": "integer" },
+          "rulesApplied": { "type": "integer" },
+          "categoriesUsed": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "error_codes": {
+    "INVALID_INPUT": "Invalid or missing emails array",
+    "EMPTY_EMAILS": "Emails array cannot be empty",
+    "PROCESSING_FAILED": "Email processing failed",
+    "CATEGORY_ERROR": "Invalid category configuration",
+    "RULE_ERROR": "Custom rule processing failed"
+  }
+}

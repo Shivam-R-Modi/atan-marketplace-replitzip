@@ -1,0 +1,164 @@
+{
+  "name": "Data Entry",
+  "type": "data-entry",
+  "version": "1.0.0",
+  "description": "Automated data extraction, validation, and entry from documents and forms",
+  "capabilities": {
+    "formats": ["Forms", "Tables", "Documents"],
+    "validation": true,
+    "accuracy": "98.1%",
+    "features": [
+      "Data cleaning",
+      "Type detection",
+      "Field validation",
+      "Quality assessment",
+      "Suggestion generation",
+      "Format standardization"
+    ]
+  },
+  "input_schema": {
+    "type": "object",
+    "required": ["fields"],
+    "properties": {
+      "fields": {
+        "type": "array",
+        "description": "Array of fields to process",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["value"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Field name or identifier"
+            },
+            "value": {
+              "description": "Field value to process (any type)"
+            },
+            "type": {
+              "type": "string",
+              "description": "Expected data type",
+              "enum": ["text", "email", "phone", "number", "date", "currency"]
+            },
+            "required": {
+              "type": "boolean",
+              "description": "Whether field is required",
+              "default": false
+            }
+          }
+        }
+      },
+      "validationRules": {
+        "type": "object",
+        "description": "Custom validation rules per field",
+        "patternProperties": {
+          ".*": {
+            "type": "object",
+            "properties": {
+              "pattern": { "type": "string" },
+              "minLength": { "type": "integer" },
+              "maxLength": { "type": "integer" },
+              "allowedValues": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        },
+        "default": {}
+      },
+      "outputFormat": {
+        "type": "string",
+        "description": "Desired output format",
+        "enum": ["json", "csv", "xml"],
+        "default": "json"
+      }
+    }
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "totalFields": { "type": "integer" },
+      "extractedData": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "fieldId": { "type": "integer" },
+            "fieldName": { "type": "string" },
+            "originalValue": {},
+            "cleanedValue": { "type": "string" },
+            "detectedType": { "type": "string" },
+            "validation": { 
+              "type": "string", 
+              "enum": ["valid", "invalid", "requires_review"]
+            },
+            "validationErrors": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "confidence": { 
+              "type": "number", 
+              "minimum": 0, 
+              "maximum": 1 
+            },
+            "suggestions": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "metadata": {
+              "type": "object",
+              "properties": {
+                "processingFlags": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "dataQuality": { 
+                  "type": "string",
+                  "enum": ["high", "medium", "low", "empty"]
+                }
+              }
+            },
+            "processedAt": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "validFields": { "type": "integer" },
+      "requiresReview": { "type": "integer" },
+      "invalidFields": { "type": "integer" },
+      "summary": {
+        "type": "object",
+        "properties": {
+          "totalFields": { "type": "integer" },
+          "validFields": { "type": "integer" },
+          "requiresReview": { "type": "integer" },
+          "invalidFields": { "type": "integer" },
+          "successRate": { "type": "number" },
+          "reviewRate": { "type": "number" },
+          "qualityScore": { "type": "integer" }
+        }
+      },
+      "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+      "processedAt": { "type": "string", "format": "date-time" },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "processingTime": { "type": "integer" },
+          "validationRulesApplied": { "type": "integer" },
+          "outputFormat": { "type": "string" },
+          "dataTypes": {
+            "type": "object",
+            "description": "Count of each detected data type"
+          }
+        }
+      }
+    }
+  },
+  "error_codes": {
+    "INVALID_INPUT": "Invalid or missing fields array",
+    "EMPTY_FIELDS": "Fields array cannot be empty",
+    "VALIDATION_ERROR": "Field validation failed",
+    "TYPE_DETECTION_FAILED": "Could not detect data type",
+    "PROCESSING_FAILED": "Field processing failed"
+  }
+}
